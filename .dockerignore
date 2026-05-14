@@ -1,0 +1,49 @@
+# Dependencias (se reinstalan dentro del contenedor)
+node_modules
+
+# Compilación previa
+dist
+build
+
+# Variables de entorno locales (se inyectan desde Dokploy)
+.env
+.env.*
+!.env.example
+
+# Control de versiones
+.git
+.gitignore
+
+# Herramientas de desarrollo
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Tests y coverage
+/coverage
+/.nyc_output
+**/*.spec.ts
+**/*.e2e-spec.ts
+test/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Misceláneos
+*.md
+README*
+sqlsupabase.sql
