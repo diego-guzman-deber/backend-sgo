@@ -3,7 +3,7 @@
 # Instala SOLO las dependencias de producción.
 # Se cachea mientras package.json / pnpm-lock.yaml no cambien.
 # =============================================================================
-FROM node:22-alpine AS deps
+FROM node:24-alpine AS deps
 
 # Habilitar corepack para usar pnpm sin instalarlo manualmente
 RUN corepack enable && corepack prepare pnpm@latest --activate
@@ -16,15 +16,15 @@ COPY package.json pnpm-lock.yaml ./
 # Instalar solo dependencias de producción
 RUN pnpm install --frozen-lockfile --prod
 
-# Si el proyecto tiene schema de Prisma, descomentar las siguientes líneas:
-# COPY prisma ./prisma
-# RUN pnpm exec prisma generate
+# Copiamos Prisma y generamos el cliente
+COPY prisma ./prisma
+RUN pnpm exec prisma generate
 
 # =============================================================================
 # Stage 2 – builder
 # Compila el proyecto TypeScript a JavaScript.
 # =============================================================================
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
@@ -34,9 +34,9 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
-# Si el proyecto tiene schema de Prisma, descomentar las siguientes líneas:
-# COPY prisma ./prisma
-# RUN pnpm exec prisma generate
+# Generamos el cliente de Prisma para el build
+COPY prisma ./prisma
+RUN pnpm exec prisma generate
 
 # Copiar el código fuente y archivos de configuración del compilador
 COPY nest-cli.json tsconfig.json tsconfig.build.json ./
@@ -50,7 +50,7 @@ RUN pnpm run build
 # Solo contiene el código compilado y las dependencias de producción.
 # Imagen mínima (~200 MB vs ~1 GB con todo incluido).
 # =============================================================================
-FROM node:22-alpine AS runner
+FROM node:24-alpine AS runner
 
 # Crear usuario no-root para mayor seguridad
 RUN addgroup --system --gid 1001 nodejs \
@@ -67,8 +67,8 @@ COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
 # Copiar package.json (NestJS lo usa en runtime para resolver rutas)
 COPY --chown=nestjs:nodejs package.json ./
 
-# Si el proyecto tiene schema de Prisma, descomentar:
-# COPY --chown=nestjs:nodejs prisma ./prisma
+# Copiamos el directorio prisma al runner para que la base de datos se pueda migrar si hace falta
+COPY --chown=nestjs:nodejs prisma ./prisma
 
 # Cambiar al usuario no-root
 USER nestjs
