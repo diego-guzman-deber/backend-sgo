@@ -1,34 +1,34 @@
 import { Controller, Get, Query, Res } from '@nestjs/common';
 import type { Response } from 'express';
-import { OrdersService } from './orders.service';
+import { ContractsService } from './contracts.service';
 import { ExcelService } from '../../common/excel/excel.service';
 import { ContractHistoryByYearDto } from './dto/contract-history-by-year.dto';
 import { ContractHistoryByDateRangeDto } from './dto/contract-history-by-date-range.dto';
 
-@Controller('orders')
-export class OrdersController {
+@Controller('contracts')
+export class ContractsController {
   constructor(
-    private readonly ordersService: OrdersService,
+    private readonly contractsService: ContractsService,
     private readonly excelService: ExcelService,
   ) {}
 
   @Get()
   getStatus(): string {
-    return this.ordersService.getStatus();
+    return this.contractsService.getStatus();
   }
 
   /**
-   * GET /api/orders/history?year=2026&limit=300
+   * GET /api/contracts/history?year=2026&limit=300
    *
    * Contratos cuyo start_date está dentro del año indicado.
    */
   @Get('history')
   async getContractHistoryByYear(@Query() query: ContractHistoryByYearDto) {
-    return this.ordersService.getContractHistoryByYear(query);
+    return this.contractsService.getContractHistoryByYear(query);
   }
 
   /**
-   * GET /api/orders/history/range?from=2018-01-01&to=2026-12-31&limit=300
+   * GET /api/contracts/history/range?from=2018-01-01&to=2026-12-31&limit=300
    *
    * Devuelve JSON con los contratos del rango. Úsalo para mostrar la tabla en el frontend.
    */
@@ -36,11 +36,11 @@ export class OrdersController {
   async getContractHistoryByDateRange(
     @Query() query: ContractHistoryByDateRangeDto,
   ) {
-    return this.ordersService.getContractHistoryByDateRange(query);
+    return this.contractsService.getContractHistoryByDateRange(query);
   }
 
   /**
-   * GET /api/orders/history/range/excel?from=2018-01-01&to=2026-12-31
+   * GET /api/contracts/history/range/excel?from=2018-01-01&to=2026-12-31
    *
    * Descarga el Excel con los MISMOS parámetros del filtro de la tabla.
    * El frontend solo necesita hacer window.open() o window.location.href con esta URL.
@@ -51,7 +51,7 @@ export class OrdersController {
     @Res() res: Response,
   ) {
     const { columns, rows } =
-      await this.ordersService.exportContractHistoryByDateRange(query);
+      await this.contractsService.exportContractHistoryByDateRange(query);
 
     const from = query.from.toISOString().split('T')[0];
     const to = query.to.toISOString().split('T')[0];

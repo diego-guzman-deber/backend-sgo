@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../config/database/prisma.service';
 
 @Injectable()
-export class OrdersRepository {
+export class ContractsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   getStatus(): string {
-    return 'Orders module ready';
+    return 'Contracts module ready';
   }
 
   /**

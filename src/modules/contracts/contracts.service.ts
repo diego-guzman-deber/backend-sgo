@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { OrdersRepository } from './orders.repository';
+import { ContractsRepository } from './contracts.repository';
 import { ContractHistoryByYearDto } from './dto/contract-history-by-year.dto';
 import { ContractHistoryByDateRangeDto } from './dto/contract-history-by-date-range.dto';
 import { ExcelService } from '../../common/excel/excel.service';
 
 @Injectable()
-export class OrdersService {
+export class ContractsService {
   constructor(
-    private readonly ordersRepository: OrdersRepository,
+    private readonly contractsRepository: ContractsRepository,
     private readonly excelService: ExcelService,
   ) {}
 
   getStatus(): string {
-    return this.ordersRepository.getStatus();
+    return this.contractsRepository.getStatus();
   }
 
   /**
@@ -23,7 +23,7 @@ export class OrdersService {
     const year = query.year ?? new Date().getFullYear();
     const limit = query.limit ?? 300;
 
-    const contracts = await this.ordersRepository.findContractsByYear(
+    const contracts = await this.contractsRepository.findContractsByYear(
       year,
       limit,
     );
@@ -42,7 +42,7 @@ export class OrdersService {
   async getContractHistoryByDateRange(query: ContractHistoryByDateRangeDto) {
     const limit = query.limit ?? 300;
 
-    const contracts = await this.ordersRepository.findContractsByDateRange(
+    const contracts = await this.contractsRepository.findContractsByDateRange(
       query.from,
       query.to,
       limit,
@@ -62,7 +62,7 @@ export class OrdersService {
    */
   async exportContractHistoryByDateRange(query: ContractHistoryByDateRangeDto) {
     const limit = query.limit ?? 1000;
-    const contracts = await this.ordersRepository.findContractsByDateRange(
+    const contracts = await this.contractsRepository.findContractsByDateRange(
       query.from,
       query.to,
       limit,
