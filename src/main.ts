@@ -7,8 +7,9 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
+  const corsOrigin = process.env.CORS_ORIGIN?.replace(/\/$/, '') ?? 'http://sgo.eldeber.bo';
   app.enableCors({
-    origin: process.env.CORS_ORIGIN ?? "http://sgo.eldeber.bo/" ,
+    origin: corsOrigin,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['Content-Disposition'], // necesario para que el frontend lea el nombre del archivo Excel
