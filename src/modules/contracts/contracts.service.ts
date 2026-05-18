@@ -16,22 +16,22 @@ export class ContractsService {
   }
 
   /**
-   * Retorna el historial de contratos filtrado por año.
+   * Retorna el historial de acuerdos activos filtrado por año.
    * Si no se pasa año, usa el año actual.
    */
-  async getContractHistoryByYear(query: ContractHistoryByYearDto) {
+  async getAgreementHistoryByYear(query: ContractHistoryByYearDto) {
     const year = query.year ?? new Date().getFullYear();
     const limit = query.limit ?? 300;
 
-    const contracts = await this.contractsRepository.findContractsByYear(
+    const agreements = await this.contractsRepository.findAgreementsByYear(
       year,
       limit,
     );
 
     return {
       year,
-      total: contracts.length,
-      data: contracts,
+      total: agreements.length,
+      acuerdos: agreements,
     };
   }
 

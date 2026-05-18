@@ -16,12 +16,13 @@ export class ContractsRepository {
    *   WHERE start_date >= '{year}-01-01' AND start_date < '{year+1}-01-01'
    *   LIMIT {limit};
    */
-  async findContractsByYear(year: number, limit: number) {
+  async findAgreementsByYear(year: number, limit: number) {
     const startOfYear = new Date(`${year}-01-01T00:00:00.000Z`);
     const startOfNextYear = new Date(`${year + 1}-01-01T00:00:00.000Z`);
 
     return this.prisma.contract.findMany({
       where: {
+        isActive: true,
         startDate: {
           gte: startOfYear,
           lt: startOfNextYear,

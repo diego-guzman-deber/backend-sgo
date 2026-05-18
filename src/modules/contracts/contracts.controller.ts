@@ -5,7 +5,7 @@ import { ExcelService } from '../../common/excel/excel.service';
 import { ContractHistoryByYearDto } from './dto/contract-history-by-year.dto';
 import { ContractHistoryByDateRangeDto } from './dto/contract-history-by-date-range.dto';
 
-@Controller('contracts')
+@Controller('agreements')
 export class ContractsController {
   constructor(
     private readonly contractsService: ContractsService,
@@ -18,13 +18,13 @@ export class ContractsController {
   }
 
   /**
-   * GET /api/contracts/history?year=2026&limit=300
+   * GET /api/agreements/history?year=2026&limit=300
    *
-   * Contratos cuyo start_date está dentro del año indicado.
+   * Acuerdos cuyo start_date está dentro del año indicado.
    */
   @Get('history')
-  async getContractHistoryByYear(@Query() query: ContractHistoryByYearDto) {
-    return this.contractsService.getContractHistoryByYear(query);
+  async getAgreementHistoryByYear(@Query() query: ContractHistoryByYearDto) {
+    return this.contractsService.getAgreementHistoryByYear(query);
   }
 
   /**
